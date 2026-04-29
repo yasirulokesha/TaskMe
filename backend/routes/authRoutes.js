@@ -1,19 +1,12 @@
 const passport = require('passport');
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 // Redirect to Google for authentication
 router.get('/google',
-    passport.authenticate('google', { scope: ['profile', 'email'] })
+    passport.authenticate('google',{ scope: ['profile', 'email'] })
 )
-
-router.get('/auth_token',(req, res)=>{
-    const token = req.cookies.auth_token;
-    if (!token) {
-        return res.status(401).json({ message: 'No token provided' });
-    }
-    return res.status(200).json({ token });
-})
 
 // Handle callback from Google
 router.get('/google/callback',
@@ -51,15 +44,14 @@ router.get('/google/callback',
             sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         });
-
-        res.status(200).json({ message: `Authentication successful ${req.user.name}`, token });
+        res.redirect(`${process.env.CLIENT_URL}dashboard`);
     }
 )
 
 // Logout route
 router.get('/logout', (req, res, next) => {
     req.logout((err) => {
-        if (err) return next(err);
+        if (err) return next(err, console.error('Error during logout:', err));
 
         req.session.destroy((err) => {
             if (err) return next(err);
@@ -67,7 +59,8 @@ router.get('/logout', (req, res, next) => {
             res.clearCookie('auth_token');
             res.clearCookie('email');
             res.clearCookie('avatar');
-            res.redirect('/auth');
+            res.redirect(`${process.env.CLIENT_URL}`);
+            console.log('User logged out successfully');
         });
     });
 });
@@ -80,9 +73,14 @@ router.get('/failure', (req, res) => {
 
 router.get('/user', (req, res) => {
     if (req.isAuthenticated()) {
-        res.json(req.user);
+        return res.status(200).json({
+            id: req.user.id,
+            username: req.user.username,
+            email: req.user.email,
+            avatar: req.user.photo
+        });
     } else {
-        res.redirect('/');
+        return res.status(401).json({ error: 'Unauthorized' });
     }
 })
 

@@ -69,7 +69,7 @@ const NAV_ITEMS = [
 
 const SideNavigation = () => {
   const [expanded, setExpanded] = useState(false);
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   return (
     <nav

@@ -73,12 +73,7 @@ router.get('/failure', (req, res) => {
 
 router.get('/user', (req, res) => {
     if (req.isAuthenticated()) {
-        return res.status(200).json({
-            id: req.user.id,
-            username: req.user.username,
-            email: req.user.email,
-            avatar: req.user.photo
-        });
+        res.json(req.user);
     } else {
         return res.status(401).json({ error: 'Unauthorized' });
     }

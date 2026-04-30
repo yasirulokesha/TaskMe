@@ -31,7 +31,6 @@ app.use(passport.session());
 
 app.use(cookieParser());
 
-
 app.listen(process.env.PORT, '0.0.0.0', () => {
     console.log(`Server running at: ${url}`);
 });
@@ -51,3 +50,5 @@ app.use('/auth', authRoutes);
 // User-profile routes
 const profileRoutes = require('./routes/profileRoutes');
 app.use('/user', profileRoutes);
+
+module.exports = app;

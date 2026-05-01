@@ -4,6 +4,7 @@ const passport = require('passport');
 const session = require('express-session');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const connectDb = require('./config/db');
 require('./config/passport'); 
 
 require('dotenv').config();
@@ -31,24 +32,20 @@ app.use(passport.session());
 
 app.use(cookieParser());
 
-app.listen(process.env.PORT, '0.0.0.0', () => {
-    console.log(`Server running at: ${url}`);
-});
+// app.listen(process.env.PORT, '0.0.0.0', () => {
+//     console.log(`Server running at: ${url}`);
+// });
 
 // Connect to MongoDB and set up routes for tasks and users
-const connectDb = require('./config/db');
 connectDb();
 
 // Task routes
-const taskRoutes = require('./routes/taskRoutes');
-app.use('/', taskRoutes);
+app.use('/', require('./routes/taskRoutes'));
 
 // Auth routes
-const authRoutes = require('./routes/authRoutes');
-app.use('/auth', authRoutes);
+app.use('/auth', require('./routes/authRoutes'));
 
 // User-profile routes
-const profileRoutes = require('./routes/profileRoutes');
-app.use('/user', profileRoutes);
+app.use('/user', require('./routes/profileRoutes'));
 
 module.exports = app;

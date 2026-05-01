@@ -4,8 +4,8 @@ const passport = require('passport');
 const session = require('express-session');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const connectDb = require('./config/db');
-require('./config/passport'); 
+const connectDb = require('../config/db');
+require('../config/passport'); 
 
 require('dotenv').config();
 
@@ -40,12 +40,12 @@ app.use(cookieParser());
 connectDb();
 
 // Task routes
-app.use('/', require('./routes/taskRoutes'));
+app.use('/', require('../routes/taskRoutes'));
 
 // Auth routes
-app.use('/auth', require('./routes/authRoutes'));
+app.use('/auth', require('../routes/authRoutes'));
 
 // User-profile routes
-app.use('/user', require('./routes/profileRoutes'));
+app.use('/user', require('../routes/profileRoutes'));
 
 module.exports = app;

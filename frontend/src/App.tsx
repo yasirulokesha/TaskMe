@@ -1,6 +1,6 @@
 import "./index.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useAuth } from "./context/authContext.tsx";
+import { useAuth } from "./hooks/useAuth.tsx";
 import VerifyRoutes from "./components/verifyRoutes.tsx";
 import Dashboard from "./page/dashboard.tsx";
 import Landing from "./landing.tsx";

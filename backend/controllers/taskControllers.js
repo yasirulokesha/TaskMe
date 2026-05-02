@@ -2,7 +2,7 @@ const Task = require('../models/taskSchema');
 
 // View all tasks
 exports.getAllTasks = async (req, res) => {
-    await Task.find()
+    await Task.find({ username: `${req.user.username}` })
         .then(tasks => res.json(tasks))
         .catch(err => res.status(500).json({ error: 'Failed to fetch tasks | Server Error' }));
 }
@@ -25,6 +25,7 @@ exports.createTask = async (req, res) => {
         })
         .catch(err => {
             console.error('Error creating task:', err);
+            console.error('Request body:', req.body);
             res.status(500).json({ error: 'Failed to create task | Server Error' });
         })
 }

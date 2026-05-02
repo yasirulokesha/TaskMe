@@ -1,5 +1,5 @@
 // import { useState, createContext } from "react";
-import { useAuth } from "../context/authContext.tsx";
+import { useAuth } from "../hooks/useAuth.tsx";
 
 export default function VerifyRoutes({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();

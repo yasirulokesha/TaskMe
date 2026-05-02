@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../context/authContext";
+import { useAuth } from "../hooks/useAuth";
 import { NavLink, useNavigate } from "react-router-dom";
 import { MdSpaceDashboard } from "react-icons/md";
 import { FaTasks } from "react-icons/fa";
@@ -73,7 +73,7 @@ const SideNavigation = () => {
 
   return (
     <nav
-      className={` p-4 gap-3 overflow-hidden bg-[#2B2D42] text-white flex flex-col transition-normal ease-[cubic-bezier(0.4, 0, 0.2, 1)] duration-150 ${expanded ? "w-64" : "w-18"}`}
+      className={` p-4 gap-3 overflow-hidden bg-[#2B2D42] text-white flex flex-col transition-normal ease-[cubic-bezier(0.4, 0, 0.2, 1)] duration-200 max-w-64 ${expanded ? "w-64" : "w-18"}`}
     >
       <div className="flex gap-2 items-center mt-2 transition-none animate-none">
         <button
@@ -90,13 +90,13 @@ const SideNavigation = () => {
           <img
             src={logo}
             alt="Logo"
-            className="w-full max-w-25 translate-x-1/2"
+            className="w-full max-w-25"
           />
         )}
       </div>
 
       {/* Nav items */}
-      <div className="flex flex-col gap-4 my-auto h-full justify-between">
+      <div className="sm:flex flex-col gap-4 my-auto h-full justify-between hidden">
         {NAV_ITEMS.map(({ section, items }) => (
           <div key={section}>
             <div className={section === "profile" ? "mt-auto mb-0 " : ""}>
@@ -105,11 +105,11 @@ const SideNavigation = () => {
                   key={path}
                   to={path}
                   className={({ isActive }) =>
-                    `flex items-center h-full gap-2 p-2 my-2 rounded-md ${isActive ? "bg-[#414571] text-white" : "text-gray-300 hover:bg-gray-600"}`
+                    `flex items-center h-full gap-2 p-2 my-2 rounded-md ${expanded? "w-full": "w-fit"} ${isActive ? "bg-[#414571] text-white" : "text-gray-300 hover:bg-gray-600"}`
                   }
                   title={!expanded ? label : ""}
                 >
-                  <div className="text-2xl">{icon}</div>
+                  <div className="md:text-2xl text-xl">{icon}</div>
                   {expanded && <span className="nav-label">{label}</span>}
                 </NavLink>
               ))}

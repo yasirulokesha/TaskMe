@@ -44,7 +44,7 @@ router.get('/google/callback',
             sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         });
-        res.redirect(`${process.env.CLIENT_URL}dashboard`);
+        res.redirect(`${process.env.ORIGIN_URL}dashboard/home`);
     }
 )
 

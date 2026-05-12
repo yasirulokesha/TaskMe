@@ -4,9 +4,23 @@ import { useAuth } from "./hooks/useAuth.tsx";
 import VerifyRoutes from "./components/verifyRoutes.tsx";
 import Dashboard from "./page/dashboard.tsx";
 import Landing from "./landing.tsx";
+import LoadingScreen from "./components/loadingScreen.tsx";
+import { useState } from "react";
 
 export default function App() {
   const { logout } = useAuth();
+  const [loading, setLoading] = useState(false);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  const handleLogout = () => {
+    setLoading(true);
+    logout();
+    window.location.href = "/";
+    setLoading(false);
+  }
 
   return (
     <BrowserRouter>
@@ -23,8 +37,7 @@ export default function App() {
         <Route
           path="/logout"
           Component={() => {
-            logout();
-            window.location.href = "/";
+            handleLogout();
             return null;
           }}
         />

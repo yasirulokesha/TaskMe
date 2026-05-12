@@ -18,9 +18,12 @@ export default function TaskViews() {
   return (
     <div className="w-full h-full m-auto flex flex-col gap-4 mt-10">
       {loading && (
-        <p className="flex justify-center items-center h-full bg-amber-600">
-          Loading tasks...
-        </p>
+        <div className="animate-pulse flex flex-col items-center gap-6 w-full">
+          
+          <div className="h-10 bg-slate-400 w-full rounded-md"></div>
+          <div className="h-10 bg-slate-400 w-full rounded-md"></div>
+          <div className="h-10 bg-slate-400 w-full rounded-md"></div>
+        </div>
       )}
       {!loading && !error && typedTasks.length === 0 && <p>No tasks found.</p>}
       {!loading && !error && typedTasks.length > 0 && (
@@ -78,10 +81,14 @@ export default function TaskViews() {
                           UpdateTask(task._id, updatedTask);
                         }}
                       />
-                    <StatusTip days={
-                      Math.ceil((new Date(task.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-                    } type="success" />
-
+                      <StatusTip
+                        days={Math.ceil(
+                          (new Date(task.dueDate).getTime() -
+                            new Date().getTime()) /
+                            (1000 * 60 * 60 * 24),
+                        )}
+                        type="success"
+                      />
                     </div>
                   </div>
                 </li>

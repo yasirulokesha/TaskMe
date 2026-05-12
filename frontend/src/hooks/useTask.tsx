@@ -1,13 +1,20 @@
 import axios from "axios";
 import { useState, useCallback, useEffect } from "react";
 
+interface Task {
+  _id: string;
+  title: string;
+  notes: string;
+  dueDate: string;
+  completed: boolean;
+}
+
 export default function useTasks() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const fetchTasks = useCallback(async () => {
-    setLoading(true);
     try {
       const response = await axios.get("http://localhost:3001/", {
         withCredentials: true,
@@ -22,7 +29,9 @@ export default function useTasks() {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       await fetchTasks();
+      setLoading(false);
     };
     fetchData();
   }, [fetchTasks]);
@@ -60,8 +69,18 @@ export default function useTasks() {
 
   const UpdateTask = async (
     id: string,
-    updatedData: { title: string; notes: string; dueDate: string; completed: boolean },
+    updatedData: {
+      title: string;
+      notes: string;
+      dueDate: string;
+      completed: boolean;
+    },
   ) => {
+    const previousTasks = tasks;
+    // optimistic update
+    setTasks((prev) =>
+      prev.map((t) => (t._id === id ? { ...t, ...updatedData } : t)),
+    );
     try {
       await axios.put(`http://localhost:3001/${id}`, updatedData, {
         withCredentials: true,
@@ -72,6 +91,7 @@ export default function useTasks() {
     } catch (err) {
       console.log(err);
       setError("Failed to update task");
+      setTasks(previousTasks);
     }
   };
 

@@ -14,6 +14,8 @@ export default function useTasks() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const previousTasks = tasks;
+
   const fetchTasks = useCallback(async () => {
     try {
       const response = await axios.get("http://localhost:3001/", {
@@ -52,18 +54,22 @@ export default function useTasks() {
     } catch (err) {
       console.log(err);
       setError("Failed to create task");
+      setTasks(previousTasks);
     }
   };
 
   const DeleteTask = async (id: string) => {
+    setTasks((prev) => prev.filter((t) => t._id !== id));
     try {
       await axios.delete(`http://localhost:3001/${id}`, {
         withCredentials: true,
       });
       console.log("Task deleted successfully");
+      // window.location.reload();
     } catch (err) {
       console.log(err);
       setError("Failed to delete task");
+      setTasks(previousTasks);
     }
   };
 

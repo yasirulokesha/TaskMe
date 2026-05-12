@@ -1,7 +1,7 @@
 import useTasks from "../hooks/useTask";
 import { IoCheckmarkDone } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
-import StatusTip from "./toolTips";
+import StatusTip from "./statusTips";
 
 type Task = {
   _id: string;
@@ -11,15 +11,22 @@ type Task = {
   completed: boolean;
 };
 
-export default function TaskViews() {
+export default function TaskViews({
+  filter,
+}: {
+  filter: "pending" | "completed";
+}) {
   const { tasks, loading, error, DeleteTask, UpdateTask } = useTasks();
   const typedTasks = tasks as Task[];
+  const pendingTasks = typedTasks.filter((task) => !task.completed);
+  const completedTasks = typedTasks.filter((task) => task.completed);
+
+  const filteredTasks = filter === "pending" ? pendingTasks : completedTasks;
 
   return (
     <div className="w-full h-full m-auto flex flex-col gap-4 mt-10">
       {loading && (
         <div className="animate-pulse flex flex-col items-center gap-6 w-full">
-          
           <div className="h-10 bg-slate-400 w-full rounded-md"></div>
           <div className="h-10 bg-slate-400 w-full rounded-md"></div>
           <div className="h-10 bg-slate-400 w-full rounded-md"></div>
@@ -28,7 +35,7 @@ export default function TaskViews() {
       {!loading && !error && typedTasks.length === 0 && <p>No tasks found.</p>}
       {!loading && !error && typedTasks.length > 0 && (
         <ul className="flex flex-col w-full flex-wrap gap-6 justify-start">
-          {typedTasks.map((task, index) => {
+          {filteredTasks.map((task, index) => {
             const prevDate = index > 0 ? typedTasks[index - 1].dueDate : null;
             const isNewdate = task.dueDate !== prevDate;
             return (
@@ -81,14 +88,19 @@ export default function TaskViews() {
                           UpdateTask(task._id, updatedTask);
                         }}
                       />
-                      <StatusTip
-                        days={Math.ceil(
-                          (new Date(task.dueDate).getTime() -
-                            new Date().getTime()) /
-                            (1000 * 60 * 60 * 24),
-                        )}
-                        type="success"
-                      />
+                      {task.completed && (
+                        <StatusTip type="completed" completedAt={""} />
+                      )}
+                      {!task.completed && (
+                        <StatusTip
+                          days={Math.ceil(
+                            (new Date(task.dueDate).getTime() -
+                              new Date().getTime()) /
+                              (1000 * 60 * 60 * 24),
+                          )}
+                          type="success"
+                        />
+                      )}
                     </div>
                   </div>
                 </li>

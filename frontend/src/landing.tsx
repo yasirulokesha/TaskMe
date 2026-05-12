@@ -1,7 +1,20 @@
+import { useState } from "react";
 import logo from "../src/assets/logo.svg";
 import { IconButton } from "./components/buttonVarients";
+import LoadingScreen from "./components/loadingScreen";
 
 function Landing() {
+  const [loading, setLoading] = useState(false);
+
+  const handleGoogleSignIn = () => {
+    setLoading(true);
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
+  };
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
   return (
     <>
       <header className="h-20 bg-[#FDFFF1] absolute w-full top-0 left-0 ">
@@ -46,9 +59,7 @@ function Landing() {
 
           <IconButton
             text="Sign in with Google"
-            onPress={() => {
-              window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`; 
-            }}
+            onPress={handleGoogleSignIn}
             icon={
               <svg
                 width="18"
@@ -80,7 +91,7 @@ function Landing() {
             rel="noopener noreferrer"
             className="text-sm text-[#2B2D42] font-bold"
           >
-          Yasiru Lokesha
+            Yasiru Lokesha
           </a>
         </p>
       </footer>

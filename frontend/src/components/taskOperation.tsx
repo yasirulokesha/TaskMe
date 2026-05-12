@@ -27,6 +27,10 @@ export default function TaskViews({
     <div className="w-full h-full m-auto flex flex-col gap-4 mt-10">
       {loading && (
         <div className="animate-pulse flex flex-col items-center gap-6 w-full">
+<<<<<<< HEAD
+=======
+          
+>>>>>>> 5556f595761127cc1fc6b1ea82eed865a372f74e
           <div className="h-10 bg-slate-400 w-full rounded-md"></div>
           <div className="h-10 bg-slate-400 w-full rounded-md"></div>
           <div className="h-10 bg-slate-400 w-full rounded-md"></div>
@@ -88,6 +92,7 @@ export default function TaskViews({
                           UpdateTask(task._id, updatedTask);
                         }}
                       />
+<<<<<<< HEAD
                       {task.completed && (
                         <StatusTip type="completed" completedAt={""} />
                       )}
@@ -101,6 +106,16 @@ export default function TaskViews({
                           type="success"
                         />
                       )}
+=======
+                      <StatusTip
+                        days={Math.ceil(
+                          (new Date(task.dueDate).getTime() -
+                            new Date().getTime()) /
+                            (1000 * 60 * 60 * 24),
+                        )}
+                        type="success"
+                      />
+>>>>>>> 5556f595761127cc1fc6b1ea82eed865a372f74e
                     </div>
                   </div>
                 </li>

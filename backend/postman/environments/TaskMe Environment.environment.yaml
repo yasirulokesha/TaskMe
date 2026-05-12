@@ -1,2 +1,5 @@
 name: TaskMe Environment
-values: []
+values:
+  - key: auth_token
+    enabled: true
+    value: ''

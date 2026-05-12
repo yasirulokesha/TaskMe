@@ -36,15 +36,23 @@ exports.updateTask = async (req, res) => {
     const { id } = req.params;
     const { title, notes, dueDate, completed } = req.body;
 
-    Task.findByIdAndUpdate(id, {
+    await Task.findByIdAndUpdate(id, {
         title,
         notes,
         dueDate: new Date(dueDate),
         completed
-    }, { new: true })
+    })
     .then(updatedTask => res.json(updatedTask))
     .catch(err => res.status(500).json({ error: 'Failed to update task' }));
 }
+
+// exports.updateTask = async (req, res) => {
+//     const { id } = req.params;
+//     const { completed } = req.body;
+//     await Task.findByIdAndUpdate(id, { completed })
+//         .then(updatedTask => res.json(updatedTask))
+//         .catch(err => res.status(500).json({ error: 'Failed to update task' }));
+// }
 
 // Delete a task
 exports.deleteTask = async (req, res) => {

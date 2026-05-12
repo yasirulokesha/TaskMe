@@ -7,11 +7,11 @@ import logo from "../assets/logo.svg";
 const Dashboard = () => {
   return (
     <div className="w-full overflow-visible h-screen flex flex-row m-0 p-0 ">
-      <aside className="sticky bg-amber-100 h-full w-fit ">
+      <aside className="sticky h-full w-fit ">
         <SideNavigation />
       </aside>
 
-      <aside className="flex-1 overflow-y-auto bg-yellow-50 p-8">
+      <aside className="flex-1 overflow-y-auto p-8">
         <img
           src={logo}
           className=" w-30 top-10 right-10 float-right absolute"

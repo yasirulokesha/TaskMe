@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #f8f9f1;
+  --primary: #f8f9f1;
   --bg-secondary: #2B2D42;
   --text-primary: #333;
   --text-secondary: #666;
@@ -12,6 +12,3 @@ body {
   font-family: 'Arial', sans-serif;
 }
 
-p{
-  color: #8D99AE;
-}

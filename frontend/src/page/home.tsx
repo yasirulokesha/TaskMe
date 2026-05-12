@@ -6,7 +6,7 @@ import {
 import { IoMdAdd } from "react-icons/io";
 import useTasks from "../hooks/useTask";
 import { useState } from "react";
-import { MdDeleteForever } from "react-icons/md";
+import TaskViews from "../components/taskOperation";
 
 type Task = {
   _id: string;
@@ -18,17 +18,14 @@ type Task = {
 
 export default function Home() {
   const [createForm, setCreate] = useState(false);
-  const { tasks, loading, error, DeleteTask, createTask } = useTasks();
-  const typedTasks = tasks as Task[];
-  const [status, setStatus] = useState("");
-  // const tempDate = new Date().toISOString();
-
+  const { createTask } = useTasks();
+  // const [status, setStatus] = useState("");
   return (
     <div className="w-full ">
       {createForm && (
         <CreateTaskForm
           closeHandle={() => setCreate(false)}
-          msg={(msg) => setStatus(msg)}
+          msg={() => {}}
           createTask={createTask}
         />
       )}
@@ -39,97 +36,7 @@ export default function Home() {
         icon={<IoMdAdd size={20} />}
       />
 
-      <div className="w-full h-full m-auto flex flex-col gap-4 mt-10">
-        {loading && <p>Loading tasks...</p>}
-        {status && <p className="text-green-500">{status}</p>}
-        {!loading && !error && typedTasks.length === 0 && (
-          <p>No tasks found.</p>
-        )}
-        {!loading && !error && typedTasks.length > 0 && (
-          <ul className="flex flex-col w-full flex-wrap gap-6 justify-start">
-            {typedTasks.map((task) => (
-              <div key={task._id}>
-                {}
-                {task.dueDate  &&  (
-                  <span className="text-lg font-bold ml-6 -mb-5">
-                    {new Date(task.dueDate).toLocaleDateString(undefined, {
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </span>
-                )}
-                <li
-                  
-                  className="flex 
-                  justify-between 
-                  flex-col 
-                  p-0 
-                  rounded-xl 
-                  overflow-hidden
-                bg-white shadow-xl drop-shadow-neutral-500 hover:outline-3 outline-0  outline-[#2b2d427e] outline-offset-0  ease-linear duration-150 h-fit hover:scale-[1.008] transition-all "
-                >
-                  <div className="w-full p-4 px-7 flex flex-row justify-between items-center">
-                    <div className="flex-col">
-                      <h1 className="flex flex-col items-left text-lg font-bold">
-                        {task.title}
-                      </h1>
-                      {task.notes && (
-                        <details className="text-sm font-normal  text-black">
-                          <summary className="cursor-pointer text-[#8D99AE] font-medium">
-                            Notes
-                          </summary>
-                          <p className="mt-2 font-medium text-md">{task.notes}</p>
-                        </details>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-4 ">
-                      <button
-                        onClick={() => {
-                          DeleteTask(task._id);
-                        }}
-                      >
-                        <MdDeleteForever className="text-2xl text-[#E04747] float-right cursor-pointer " />
-                      </button>
-                      <PrimaryButton
-                        text="Done"
-                        onPress={() => {
-                          alert("View task details - Coming soon!");
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* <h1 className="w-full bg-[#2B2D42] text-white p-3 px-7 font-bold flex flex-row justify-between items-center">
-                    {task.title}
-                    <button
-                      onClick={() => {
-                        DeleteTask(task._id);
-                      }}
-                    >
-                      <MdDeleteForever className="text-2xl text-[#E04747] float-right cursor-pointer " />
-                    </button>
-                  </h1> */}
-                  {/* <p className="px-7 p-2 overflow"> */}
-                  {/* <details>
-                      <summary>notes</summary> */}
-                  {/* <p>{task.notes}</p> */}
-                  {/* </details> */}
-                  {/* </p> */}
-                  {/* <div className="w-full justify-between mt-auto mb-0  flex flex-row items-center p-2 px-7 "> */}
-                  {/* <PrimaryButton
-                    text="Done"
-                    onPress={() => {
-                      alert("View task details - Coming soon!");
-                    }}
-                  /> */}
-                  {/* </div> */}
-                </li>
-              </div>
-            ))}
-          </ul>
-        )}
-      </div>
+      <TaskViews/>
     </div>
   );
 }

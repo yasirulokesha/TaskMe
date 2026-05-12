@@ -14,17 +14,16 @@ export default function useTasks() {
       });
       setTasks(response.data);
     } catch (err) {
-      setError("Failed to fetch tasks"+err);
+      setError("Failed to fetch tasks" + err);
     } finally {
       setLoading(false);
     }
   }, []);
 
-
   useEffect(() => {
     const fetchData = async () => {
       await fetchTasks();
-    }
+    };
     fetchData();
   }, [fetchTasks]);
 
@@ -42,7 +41,7 @@ export default function useTasks() {
       window.location.reload();
       fetchTasks();
     } catch (err) {
-        console.log(err);
+      console.log(err);
       setError("Failed to create task");
     }
   };
@@ -53,13 +52,36 @@ export default function useTasks() {
         withCredentials: true,
       });
       console.log("Task deleted successfully");
-      window.location.reload();
-      fetchTasks();
     } catch (err) {
-        console.log(err);
+      console.log(err);
       setError("Failed to delete task");
     }
   };
 
-  return { tasks, loading, error, fetchTasks, createTask, DeleteTask };
+  const UpdateTask = async (
+    id: string,
+    updatedData: { title: string; notes: string; dueDate: string; completed: boolean },
+  ) => {
+    try {
+      await axios.put(`http://localhost:3001/${id}`, updatedData, {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log("Task updated successfully");
+      fetchTasks();
+    } catch (err) {
+      console.log(err);
+      setError("Failed to update task");
+    }
+  };
+
+  return {
+    tasks,
+    loading,
+    error,
+    fetchTasks,
+    createTask,
+    DeleteTask,
+    UpdateTask,
+  };
 }

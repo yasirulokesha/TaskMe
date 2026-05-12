@@ -3,17 +3,18 @@ const Task = require('../models/taskSchema');
 // View all tasks
 exports.getAllTasks = async (req, res) => {
     await Task.find({ username: `${req.user.username}` })
+        .sort({ dueDate: 1 }) 
         .then(tasks => res.json(tasks))
         .catch(err => res.status(500).json({ error: 'Failed to fetch tasks | Server Error' }));
 }
 
 // Create a new task
 exports.createTask = async (req, res) => {
-    const { title, description, dueDate } = req.body;
+    const { title, notes, dueDate } = req.body;
     const newTask = new Task({
         username: `${req.user.username}`,
         title,
-        description,
+        notes,
         dueDate: new Date(dueDate),
         completed: false
     });
@@ -33,11 +34,11 @@ exports.createTask = async (req, res) => {
 // Update a task
 exports.updateTask = async (req, res) => {
     const { id } = req.params;
-    const { title, description, dueDate, completed } = req.body;
+    const { title, notes, dueDate, completed } = req.body;
 
     Task.findByIdAndUpdate(id, {
         title,
-        description,
+        notes,
         dueDate: new Date(dueDate),
         completed
     }, { new: true })

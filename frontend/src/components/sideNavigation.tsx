@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { MdSpaceDashboard } from "react-icons/md";
 import { FaTasks } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
@@ -73,7 +73,7 @@ const SideNavigation = () => {
 
   return (
     <nav
-      className={` p-4 gap-3 overflow-hidden bg-[#2B2D42] text-white flex flex-col transition-normal ease-[cubic-bezier(0.4, 0, 0.2, 1)] duration-200 max-w-64 ${expanded ? "w-64" : "w-18"}`}
+      className={` p-4 gap-3 h-full  overflow-hidden bg-[#2B2D42] text-white flex flex-col transition-normal ease-[cubic-bezier(0.4, 0, 0.2, 1)] duration-200 max-w-64 ${expanded ? "w-64" : "w-18"}`}
     >
       <div className="flex gap-2 items-center mt-2 transition-none animate-none">
         <button

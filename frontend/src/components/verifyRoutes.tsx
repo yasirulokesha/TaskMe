@@ -1,4 +1,3 @@
-// import { useState, createContext } from "react";
 import { useAuth } from "../hooks/useAuth.tsx";
 
 export default function VerifyRoutes({ children }: { children: React.ReactNode }) {

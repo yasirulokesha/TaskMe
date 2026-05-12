@@ -20,9 +20,9 @@ function Landing() {
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               className="lucide lucide-github w-4 h-4"
               aria-hidden="true"
             >
@@ -46,7 +46,9 @@ function Landing() {
 
           <IconButton
             text="Sign in with Google"
-            onPress={() => window.location.href = "http://localhost:3000/auth/google"}
+            onPress={() => {
+              window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`; 
+            }}
             icon={
               <svg
                 width="18"

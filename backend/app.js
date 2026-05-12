@@ -17,7 +17,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-    origin: url, 
+    origin: "http://localhost:5173", 
     credentials: true,
 }))
 
@@ -32,9 +32,9 @@ app.use(passport.session());
 
 app.use(cookieParser());
 
-// app.listen(process.env.PORT, '0.0.0.0', () => {
-//     console.log(`Server running at: ${url}`);
-// });
+app.listen(process.env.PORT, '0.0.0.0', () => {
+    console.log(`Server running at: ${url}`);
+});
 
 // Connect to MongoDB and set up routes for tasks and users
 connectDb();
@@ -48,4 +48,4 @@ app.use('/auth', require('./routes/authRoutes'));
 // User-profile routes
 app.use('/user', require('./routes/profileRoutes'));
 
-module.exports = app;
+// module.exports = app;

@@ -33,11 +33,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/auth/user', { withCredentials: true });
-                console.log('User data fetched successfully:', response.data);
+                const response = await axios.get("http://localhost:3001/auth/user", { withCredentials: true });
+                console.log('User data fetched successfully:', response.data.username);
                 setUser(response.data);
             } catch (err) {
-                setError('Failed to fetch user data');
+                setError(`Failed to fetch user data - ${err}`);
             } finally {
                 setLoading(false);
             }
@@ -48,10 +48,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const logout = async () => {
         try {
-            await axios.get('http://localhost:3000/auth/logout', { withCredentials: true });
+            await axios.get(`${import.meta.env.VITE_API_URL}/auth/logout`, { withCredentials: true });
             setUser(null);
         } catch (err) {
-            setError('Failed to log out');
+            setError(`Failed to log out ${err}`);
         }
     };
 

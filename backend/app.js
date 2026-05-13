@@ -16,12 +16,18 @@ const app = express();
 
 app.use(express.json());
 
-// app.use(cors({
-//     origin: `${url}`, 
-//     credentials: true,
-// }))
+const allowedOrigins = process.env.NODE_ENV === "production"
+  ? [
+        "https://localhost:5173", 
+        "https://taskme-frontend.onrender.com",
+        "https://task-me-app-neon.vercel.app/"
+    ]
+  : [`${url}`];
 
-app.use(cors());
+app.use(cors({
+    origin: allowedOrigins, 
+    credentials: true,
+}))
 
 app.use(session({
     secret: process.env.SESSION_SECRET,

@@ -15,7 +15,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log("Fetching user data...");
         const userData = await axios.get(`${API_URL}/user`, { withCredentials: true });
         setUser(userData.data);
-        
       } catch (err) {
         setError(`Failed to fetch user data - ${err}`);
       } finally {

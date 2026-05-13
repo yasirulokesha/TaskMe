@@ -1,11 +1,11 @@
 const os = require('os');
 const express = require('express');
 const passport = require('passport');
+const MongoStore = require('connect-mongo').default;
 const session = require('express-session');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const connectDb = require('./config/db');
-const MongoStore = require('connect-mongo');
 require('./config/passport'); 
 
 require('dotenv').config();
@@ -18,7 +18,6 @@ app.set('trust proxy', 1);
 
 app.use(express.json());
 app.use(cookieParser());
-
 
 const allowedOrigins = process.env.NODE_ENV === "production"
   ? [
@@ -38,8 +37,8 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI,         // same URI you use for connectDb
+  store: new MongoStore({
+    mongoUrl: process.env.MONGO_DB_URI,         // same URI you use for connectDb
     collectionName: 'sessions',
     ttl: 60 * 60 * 24 * 7,                   // 7 days in seconds
     autoRemove: 'native',                    // let MongoDB auto-delete expired sessions
@@ -47,14 +46,13 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: true,
-    sameSite: 'none',                        // required for cross-site (Vercel → Render)
-    maxAge: 1000 * 60 * 60 * 24 * 7,         // 7 days in ms
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 app.listen(process.env.PORT, '0.0.0.0', () => {
     console.log(`Server running at: ${url}`);

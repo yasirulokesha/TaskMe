@@ -3,7 +3,7 @@ const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const origin_url = process.env.ORIGIN_URL || 'http://localhost:5173/';
+const origin_url = process.env.ORIGIN_URL;
 
 // Redirect to Google for authentication
 router.get('/google',
@@ -61,7 +61,7 @@ router.get('/logout', (req, res, next) => {
             res.clearCookie('auth_token');
             res.clearCookie('email');
             res.clearCookie('avatar');
-            res.redirect(`${process.env.CLIENT_URL}`);
+            res.redirect(`${origin_url}`);
             console.log('User logged out successfully');
         });
     });

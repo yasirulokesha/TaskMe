@@ -1,8 +1,15 @@
 const userSchema = require('../models/userSchema');
 
 exports.getUserProfile = (req, res) => {
-    res.status(200).json({ user: req.user });
-    return req.user;
+    const username = req.user.username;
+    userSchema.findOne({ username })
+        .then(user => {
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            res.json(user);
+        })
+        .catch(err => res.status(500).json({ error: 'Failed to retrieve user profile' }));  
 }
 
 exports.updateUserProfile = (req, res) => {

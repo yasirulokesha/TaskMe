@@ -1,6 +1,7 @@
 const passport = require('passport');
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
+const { jwtAuth } = require('../middlewares/jwtAuth');
 require('dotenv').config();
 
 const origin_url = process.env.ORIGIN_URL;
@@ -40,13 +41,15 @@ router.get('/google/callback',
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         });
 
-        res.cookie('avatar', req.user.photo, {
+        res.cookie('avatar', req.user.avatar, {
             httpOnly: false,
             secure: process.env.NODE_ENV === 'development' ? false : true,
             sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         });
         res.redirect(`${origin_url}/dashboard/home`);
+        console.log('JWT token generated and cookies set successfully', req.user.avatar );
+
     }
 )
 
@@ -73,13 +76,8 @@ router.get('/failure', (req, res) => {
     res.send('Authentication failed. Please try again.');
 });
 
-router.get('/user', (req, res) => {
-    if (req.isAuthenticated()) {
-        res.json(req.user);
-        return res.status(200).json({ user: req.user });
-    } else {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
+router.get('/user', jwtAuth, (req, res) => {
+    return res.status(200).json({ user: req.user });
 })
 
 module.exports = router;

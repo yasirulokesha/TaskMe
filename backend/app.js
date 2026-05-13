@@ -43,12 +43,12 @@ app.use(session({
     ttl: 60 * 60 * 24 * 7,                   // 7 days in seconds
     autoRemove: 'native',                    // let MongoDB auto-delete expired sessions
   }),
-  cookie: {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'lax',
-    maxAge: 1000 * 60 * 60 * 24 * 7,
-  },
+  // cookie: {
+  //   httpOnly: true,
+  //   secure: true,
+  //   sameSite: 'lax',
+  //   maxAge: 1000 * 60 * 60 * 24 * 7,
+  // },
 }));
 
 app.use(passport.initialize());

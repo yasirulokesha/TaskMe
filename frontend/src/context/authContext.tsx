@@ -17,11 +17,9 @@ export interface AuthContextType {
     logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType>({
+export const AuthContextStruct = createContext<AuthContextType>({
     user: null,
     loading: true,
     error: null,
     logout: () => {}
 });
-
-export { AuthContext };

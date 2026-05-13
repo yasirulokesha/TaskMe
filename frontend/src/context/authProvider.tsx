@@ -1,6 +1,6 @@
 import { useState, useEffect} from "react";
 import axios from "axios";
-import { AuthContext, type User } from "./authContext";
+import { AuthContextStruct, type User } from "./authContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -36,10 +36,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, error, logout }}>
+        <AuthContextStruct.Provider value={{ user, loading, error, logout }}>
             {children}
-        </AuthContext.Provider>
+        </AuthContextStruct.Provider>
     );
 }
 
-export { AuthContext, AuthProvider };
+export { AuthContextStruct, AuthProvider };

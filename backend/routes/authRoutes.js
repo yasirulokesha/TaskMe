@@ -3,6 +3,8 @@ const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+const origin_url = process.env.ORIGIN_URL || 'http://localhost:5173/';
+
 // Redirect to Google for authentication
 router.get('/google',
     passport.authenticate('google',{ scope: ['profile', 'email'] })
@@ -44,7 +46,7 @@ router.get('/google/callback',
             sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         });
-        res.redirect(`http://localhost:5173/dashboard/home`);
+        res.redirect(`${origin_url}dashboard/home`);
     }
 )
 

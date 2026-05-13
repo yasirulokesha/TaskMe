@@ -9,6 +9,8 @@ interface Task {
   completed: boolean;
 }
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ export default function useTasks() {
 
   const fetchTasks = useCallback(async () => {
     try {
-      const response = await axios.get("http://localhost:3001/", {
+      const response = await axios.get(`${API_URL}`, {
         withCredentials: true,
       });
       setTasks(response.data);
@@ -44,7 +46,7 @@ export default function useTasks() {
     dueDate: string;
   }) => {
     try {
-      await axios.post("http://localhost:3001/", task, {
+      await axios.post(`${API_URL}`, task, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" },
       });
@@ -61,7 +63,7 @@ export default function useTasks() {
   const DeleteTask = async (id: string) => {
     setTasks((prev) => prev.filter((t) => t._id !== id));
     try {
-      await axios.delete(`http://localhost:3001/${id}`, {
+      await axios.delete(`${API_URL}/${id}`, {
         withCredentials: true,
       });
       console.log("Task deleted successfully");
@@ -88,7 +90,7 @@ export default function useTasks() {
       prev.map((t) => (t._id === id ? { ...t, ...updatedData } : t)),
     );
     try {
-      await axios.put(`http://localhost:3001/${id}`, updatedData, {
+      await axios.put(`${API_URL}/${id}`, updatedData, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" },
       });

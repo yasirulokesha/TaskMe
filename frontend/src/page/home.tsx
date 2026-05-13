@@ -4,7 +4,7 @@ import {
 import { IoMdAdd } from "react-icons/io";
 import useTasks from "../hooks/useTask";
 import { useState } from "react";
-import  { CreateTaskForm, TaskViews } from "../components/taskOperation";
+import  { CreateTaskForm } from "../components/taskOperation";
 
 export default function Home() {
   const [createForm, setCreate] = useState(false);
@@ -52,7 +52,7 @@ export default function Home() {
       </div>
 
 
-      <TaskViews filter={filter} />
+      {/* <TaskViews filter={filter} /> */}
     </div>
   );
 }

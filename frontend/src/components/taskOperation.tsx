@@ -97,7 +97,7 @@ function TaskViews({
                     </div>
                   </div>
                   <div
-                    className="flex-0 shrink-0 justify-center items-center  hover:-outline-offset-4 outline-amber-50 outline-2 text-white bg-[#2B2D42] duration-150 h-full w-full rounded-xl p-4"
+                    className="group flex-0 shrink-0 justify-center items-center  hover:-outline-offset-4 outline-amber-50 outline-2 text-white bg-[#2B2D42] duration-150 h-full w-full rounded-xl p-4"
                     onClick={() => {
                       const updatedTask = {
                         title: task.title,
@@ -118,7 +118,7 @@ function TaskViews({
                     ) : (
                       <div className="">
                         <SiGoogletasks
-                          className={`text-2xl cursor-pointer text-white hover:text-green-500 duration-300 ease-in-out transition-all hover:scale-105 `}
+                          className={`text-2xl cursor-pointer text-white group-hover:text-green-500 duration-300 ease-in-out transition-all group-hover:scale-105 `}
                         />
                       </div>
                     )}

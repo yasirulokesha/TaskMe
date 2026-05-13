@@ -16,10 +16,12 @@ const app = express();
 
 app.use(express.json());
 
-app.use(cors({
-    origin: `${url}`, 
-    credentials: true,
-}))
+// app.use(cors({
+//     origin: `${url}`, 
+//     credentials: true,
+// }))
+
+app.use(cors());
 
 app.use(session({
     secret: process.env.SESSION_SECRET,

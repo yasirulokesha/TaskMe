@@ -18,16 +18,17 @@ app.use(express.json());
 
 const allowedOrigins = process.env.NODE_ENV === "production"
   ? [
-        "https://localhost:5173", 
-        "https://taskme-frontend.onrender.com",
-        "https://task-me-app-neon.vercel.app/"
+      "https://taskme-frontend.onrender.com",
+      "https://task-me-app-neon.vercel.app",
     ]
-  : [`${url}`];
+  : [
+      "http://localhost:5173",
+    ];
 
 app.use(cors({
-    origin: allowedOrigins, 
-    credentials: true,
-}))
+  origin: allowedOrigins,
+  credentials: true,
+}));
 
 app.use(session({
     secret: process.env.SESSION_SECRET,

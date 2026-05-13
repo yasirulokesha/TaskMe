@@ -8,7 +8,7 @@ function Landing() {
 
   const handleGoogleSignIn = () => {
     setLoading(true);
-    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
+    window.location.href = new URL('/auth/google', import.meta.env.VITE_API_URL).toString();
   };
 
   if (loading) {

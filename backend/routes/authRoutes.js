@@ -5,6 +5,7 @@ const { jwtAuth } = require('../middlewares/jwtAuth');
 require('dotenv').config();
 
 const origin_url = process.env.ORIGIN_URL;
+const isProduction = process.env.NODE_ENV === 'production';
 
 // Redirect to Google for authentication
 router.get('/google',
@@ -29,22 +30,22 @@ router.get('/google/callback',
 
         res.cookie('auth_token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'development' ? false : true,
-            sameSite: 'lax',
+            secure: isProduction,         
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         });
 
         res.cookie('email', req.user.email, {
             httpOnly: false,
-            secure: process.env.NODE_ENV === 'development' ? false : true,
-            sameSite: 'lax',
+            secure: isProduction,         
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         });
 
         res.cookie('avatar', req.user.avatar, {
             httpOnly: false,
-            secure: process.env.NODE_ENV === 'development' ? false : true,
-            sameSite: 'lax',
+            secure: isProduction,         
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         });
         res.redirect(`${origin_url}/dashboard/home`);

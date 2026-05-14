@@ -12,3 +12,14 @@ body {
   font-family: 'Arial', sans-serif;
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  scale: 1.5;
+  filter: invert(0.5); /* useful for dark themes */
+  pointer-events: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}

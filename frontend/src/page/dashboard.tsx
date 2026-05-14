@@ -1,4 +1,3 @@
-// import { useAuth } from "../hooks/useAuth";
 import { Route, Routes } from "react-router-dom";
 import SideNavigation from "../components/sideNavigation";
 import Home from "./home";

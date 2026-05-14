@@ -73,7 +73,7 @@ const SideNavigation = () => {
 
   return (
     <nav
-      className={` p-4 gap-3 h-full  overflow-hidden bg-[#2B2D42] text-white flex flex-col transition-normal ease-[cubic-bezier(0.4, 0, 0.2, 1)] duration-200 max-w-64 ${expanded ? "w-64" : "w-18"}`}
+      className={` p-4 gap-3 h-screen  overflow-hidden bg-[#2B2D42] text-white flex flex-col transition-normal ease-[cubic-bezier(0.4, 0, 0.2, 1)] duration-200 max-w-64 ${expanded ? "w-64" : "w-18"}`}
     >
       <div className="flex gap-2 items-center mt-2 transition-none animate-none">
         <button
@@ -96,7 +96,7 @@ const SideNavigation = () => {
       </div>
 
       {/* Nav items */}
-      <div className="sm:flex flex-col gap-4 my-auto h-full justify-between hidden">
+      <div className="flex flex-col gap-4 my-auto h-full justify-between ">
         {NAV_ITEMS.map(({ section, items }) => (
           <div key={section}>
             <div className={section === "profile" ? "mt-auto mb-0 " : ""}>

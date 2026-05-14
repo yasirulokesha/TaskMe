@@ -114,7 +114,9 @@ function CreateTaskForm({ closeHandle }: { closeHandle: () => void }) {
   const [date, setDate] = useState(null as Date | null);
 
   const dateRef = useRef<Date | null>(null);
-  const [calendar, setCalendar] = useState(false);
+  // const [calendar, setCalendar] = useState(false);
+
+  console.log(msg);
 
   return (
     <div className="absolute bg-black/20 w-full h-screen z-10 top-0 left-0 transition-all duration-300 ease-in-out">

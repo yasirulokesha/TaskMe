@@ -3,8 +3,9 @@ import { MdDelete } from "react-icons/md";
 import StatusTip from "./statusTips";
 import { SiGoogletasks } from "react-icons/si";
 import { OutlinedButton, PrimaryButton } from "./buttonVarients";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Calendar from "./uiComponents";
+// import '../index.css'
 
 type Task = {
   _id: string;
@@ -19,7 +20,9 @@ function TaskViews() {
   const typedTasks = tasks as Task[];
   const pendingTasks = typedTasks.filter((task) => !task.completed);
   const completedTasks = typedTasks.filter((task) => task.completed);
-  const [filter, setFilter] = useState<"pending" | "completed">("pending");
+  const [filter, setFilter] = useState<"pending" | "completed" | "loading">(
+    "pending",
+  );
 
   const filteredTasks = filter === "pending" ? pendingTasks : completedTasks;
 
@@ -35,19 +38,25 @@ function TaskViews() {
         />
         <button
           className={
-            "relative z-4 w-[50%] px-4 py-1" +
+            "pending relative z-4 w-[50%] px-4 py-1" +
             (filter === "pending" ? "  text-white" : " text-[#2B2D42]")
           }
-          onClick={() => setFilter("pending")}
+          onClick={() => {
+            setFilter("loading");
+            setFilter("pending");
+          }}
         >
           Pending
         </button>
         <button
           className={
-            "relative z-4 w-[50%] px-4 py-1" +
+            "completed relative z-4 w-[50%] px-4 py-1" +
             (filter === "completed" ? "  text-white" : "  text-[#2B2D42]")
           }
-          onClick={() => setFilter("completed")}
+          onClick={() => {
+            setFilter("loading");
+            setFilter("completed");
+          }}
         >
           Completed
         </button>
@@ -77,7 +86,7 @@ function TaskViews() {
               return (
                 <div key={task._id}>
                   {isNewDate && (
-                    <div className="flex flex-col  w-full">
+                    <div className="flex flex-col  w-full transition-all duration-300 ease-in-out animate-move-in">
                       <span className="text-lg font-bold ml-5 mt-5">
                         {new Date(task.dueDate).toLocaleDateString(undefined, {
                           month: "long",
@@ -87,11 +96,13 @@ function TaskViews() {
                       <hr className="my-4 w-full border-gray-300" />
                     </div>
                   )}
-                  <TaskModelView
-                    task={task}
-                    DeleteTask={DeleteTask}
-                    UpdateTask={UpdateTask}
-                  />
+                  <div className={`animate-fade-in duration-100 `}>
+                    <TaskModelView
+                      task={task}
+                      DeleteTask={DeleteTask}
+                      UpdateTask={UpdateTask}
+                    />
+                  </div>
                 </div>
               );
             })
@@ -111,12 +122,12 @@ type NewTask = Omit<Task, "_id" | "completed">;
 function CreateTaskForm({ closeHandle }: { closeHandle: () => void }) {
   const { createTask } = useTasks();
   const [msg, setMsg] = useState("");
-  const [date, setDate] = useState(null as Date | null);
+  const [inputDate, setDate] = useState(new Date());
 
-  const dateRef = useRef<Date | null>(null);
-  // const [calendar, setCalendar] = useState(false);
+  const [calendar, setCalendarOpen] = useState(false);
 
-  console.log(msg);
+  const toDateString = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
   return (
     <div className="absolute bg-black/20 w-full h-screen z-10 top-0 left-0 transition-all duration-300 ease-in-out">
@@ -129,16 +140,28 @@ function CreateTaskForm({ closeHandle }: { closeHandle: () => void }) {
           className="p-4 px-7"
           onSubmit={async (e) => {
             e.preventDefault();
+
             const formData = e.target as typeof e.target & {
               title: { value: string };
               notes: { value: string };
               dueDate: { value: HTMLInputElement };
             };
 
+            switch (true) {
+              case !formData.title.value.trim():
+                setMsg("Title cannot be empty.");
+                return;
+              case inputDate === null || isNaN(inputDate.getTime()):
+                setMsg("Please select a due date.");
+                return;
+              default:
+                setMsg("");
+            }
+
             const newTask: NewTask = {
               title: formData.title.value,
               notes: formData.notes.value,
-              dueDate: new Date(e.target.date.value).toDateString(),
+              dueDate: new Date(inputDate).toDateString(),
             };
 
             await createTask(newTask)
@@ -166,25 +189,20 @@ function CreateTaskForm({ closeHandle }: { closeHandle: () => void }) {
               type="date"
               name="date"
               id="taskDate"
-              value={
-                date
-                  ? new Date().toISOString().split("T")[0]
-                  : new Date().toISOString().split("T")[0]
-              }
-              className="inline-block w-full rounded-xl bg-white px-4 py-3 shadow-xl ring-2 ring-[#2B2D42]/20"
+              value={inputDate && toDateString(new Date(inputDate))}
+              className="
+              inline-block w-full rounded-xl bg-white px-4 py-3 shadow-xl ring-2 ring-[#2B2D42]/20
+              "
+              onFocus={() => setCalendarOpen(true)}
+              onChange={() => {}}
             />
             {
-              <div className="sm:block hidden">
+              <div className={`sm:block ${calendar ? "block" : "hidden"}`}>
                 <Calendar
                   setDate={async (date: Date) => {
                     setDate(date);
-                    dateRef.current = date;
-                    const dateInput = document.getElementById(
-                      "taskDate",
-                    ) as HTMLInputElement | null;
-                    if (dateInput) {
-                      dateInput.value = date.toISOString().split("T")[0];
-                    }
+                    console.log(date.toISOString().split("T")[0]);
+                    console.log(date.toDateString());
                   }}
                 />
               </div>
@@ -223,8 +241,22 @@ const TaskModelView = ({
   DeleteTask: (id: string) => void;
   UpdateTask: (id: string, task: Task) => void;
 }) => {
+  const [isUpdating, setUpdating] = useState(false);
+
+  const DeleteTaskHandle = async (id: string) => {
+    setUpdating(true);
+
+    setTimeout(() => {
+      DeleteTask(id);
+    }, 400);
+  };
+
   return (
-    <div className="flex flex-row w-full gap-0.5">
+    <div
+      className={`flex flex-row w-full gap-0.5 transition-all duration-400 ease-in-out ${
+        isUpdating ? "opacity-0  scale-95" : "opacity-100 scale-100"
+      }`}
+    >
       <div className="flex-1 hover:-outline-offset-4 outline-gray-400 hover:outline-2 text-white bg-[#2B2D42] duration-150 h-fit w-full rounded-xl">
         <div className="w-full py-3 px-7 flex flex-row justify-between items-center">
           <div className="flex-col">
@@ -233,7 +265,18 @@ const TaskModelView = ({
             </h1>
           </div>
           <div className="flex top-0 gap-4 ">
-            {task.completed && <StatusTip type="completed" completedAt={""} />}
+            {task.completed && (
+              <>
+                <StatusTip type="completed" completedAt={""} />
+                <button
+                  onClick={() => {
+                    DeleteTaskHandle(task._id);
+                  }}
+                >
+                  <MdDelete className="text-2xl text-[#E04747] float-right cursor-pointer " />
+                </button>
+              </>
+            )}
             {!task.completed && (
               <>
                 <StatusTip
@@ -245,7 +288,7 @@ const TaskModelView = ({
                 />
                 <button
                   onClick={() => {
-                    DeleteTask(task._id);
+                    DeleteTaskHandle(task._id);
                   }}
                 >
                   <MdDelete className="text-2xl text-[#E04747] float-right cursor-pointer " />

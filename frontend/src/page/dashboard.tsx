@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import SideNavigation from "../components/sideNavigation";
 import Home from "./home";
-import logo from "../assets/logo.svg";
+import logo from "../assets/logo-white.svg";
 
 const Dashboard = () => {
   return (

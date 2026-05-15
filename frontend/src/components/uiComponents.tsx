@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import '../index.css'
 
 const DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const MONTHS = [
@@ -35,7 +36,7 @@ export default function Calendar({
   const daysInPrevMonth = new Date(year, month, 0).getDate();
 
   // Build a 6x7 grid of date cells
-  const cells = [];
+  const cells: { date: Date; inMonth: boolean }[] = [];
 
   // Leading days from previous month
   for (let i = firstDayOfMonth - 1; i >= 0; i--) {
@@ -44,15 +45,14 @@ export default function Calendar({
       inMonth: false,
     });
   }
-
   // Current month
   for (let d = 1; d <= daysInMonth; d++) {
     cells.push({ date: new Date(year, month, d), inMonth: true });
   }
-
   // Trailing days from next month to fill 42 cells
-  for (let d = 1; cells.length < 42; d++) {
-    cells.push({ date: new Date(year, month + 1, d), inMonth: false });
+  while (cells.length < 42) {
+    const offset = cells.length - (firstDayOfMonth + daysInMonth) + 1;
+    cells.push({ date: new Date(year, month + 1, offset), inMonth: false });
   }
 
   const isSameDay = (a: Date, b: Date) =>
@@ -71,9 +71,12 @@ export default function Calendar({
         {/* Header */}
         <div className="mb-4 flex items-center justify-between">
           <button
-            onClick={goPrev}
+            onClick={() => {
+              goPrev();
+            }}
             className="rounded-md p-1 text-gray-400 hover:bg-gray-800 hover:text-gray-200"
             aria-label="Previous month"
+            type="button"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
@@ -81,9 +84,12 @@ export default function Calendar({
             {MONTHS[month]} {year}
           </span>
           <button
-            onClick={goNext}
+            onClick={() => {
+              goNext();
+            }}
             className="rounded-md p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
             aria-label="Next month"
+            type="button"
           >
             <ChevronRight className="h-5 w-5" />
           </button>
@@ -108,8 +114,7 @@ export default function Calendar({
             return (
               <button
                 key={i}
-                onClick={(e) => {
-                  e.preventDefault();
+                onClick={() => {
                   setSelected(date);
                   setDate(date);
                 }}
@@ -120,6 +125,7 @@ export default function Calendar({
                       ? "text-slate-800 hover:bg-slate-300"
                       : "text-slate-300 hover:bg-slate-800/50"
                 }`}
+                type="button"
               >
                 {date.getDate()}
               </button>

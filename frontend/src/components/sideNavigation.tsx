@@ -3,13 +3,13 @@ import { useAuth } from "../hooks/useAuth";
 import { NavLink } from "react-router-dom";
 import { MdSpaceDashboard } from "react-icons/md";
 import { FaTasks } from "react-icons/fa";
-import { SiTicktick } from "react-icons/si";
 import { LuLayoutDashboard } from "react-icons/lu";
 import logo from "../assets/logo-white.svg";
 import { BiSolidDashboard } from "react-icons/bi";
 import { FaRegClock, FaCircleInfo, FaGear } from "react-icons/fa6";
 import { MdColorLens } from "react-icons/md";
 import { HiOutlineLogout } from "react-icons/hi";
+import { Calendar1Icon } from "lucide-react";
 const NAV_ITEMS = [
   {
     section: "Main",
@@ -25,14 +25,14 @@ const NAV_ITEMS = [
         icon: <FaTasks />,
       },
       {
-        label: "In progress",
-        path: "/dashboard/progress",
+        label: "Reminders",
+        path: "/dashboard/reminders",
         icon: <FaRegClock />,
       },
       {
-        label: "Completed",
-        path: "/dashboard/completed",
-        icon: <SiTicktick />,
+        label: "Calendar View",
+        path: "/dashboard/calendar",
+        icon: <Calendar1Icon />,
       },
     ],
   },

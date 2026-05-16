@@ -5,7 +5,6 @@ import { CreateTaskForm, TaskViews } from "../components/taskOperation";
 
 export default function Home() {
   const [createForm, setCreate] = useState(false);
-  // const { createTask } = useTasks();
 
   return (
     <div className="w-full ">
@@ -17,7 +16,7 @@ export default function Home() {
         icon={<IoMdAdd size={20} />}
       />
       {/* <TaskViews listOnly={true} /> */}
-      <TaskViews />
+      <TaskViews listOnly={true}/>
     </div>
   );
 }

@@ -339,56 +339,44 @@ const TaskModelView = ({
         }`}
       >
         <div className="flex-1 hover:-outline-offset-4 outline-gray-400 hover:outline-2 text-white bg-[#2B2D42] duration-150 h-fit w-full rounded-xl">
-          <div className="w-full py-3 px-7 flex flex-row justify-between items-center">
+          <div className="w-full py-3 px-7 flex sm:flex-row flex-col justify-between sm:items-center">
             <div className="flex-col">
               <h1 className="flex flex-col items-left text-lg font-bold">
                 {mergedTask.title}
               </h1>
             </div>
-            <div className="flex top-0 gap-4 ">
+            <div className="flex top-0 gap-4 justify-between items-center">
               {mergedTask.completed && (
                 <>
                   <StatusTip type="completed" />
-                  <button
-                    onClick={() => {
-                      DeleteTaskHandle(mergedTask._id);
-                    }}
-                  >
-                    <MdDelete className="text-2xl text-[#E04747] float-right cursor-pointer " />
-                  </button>
                 </>
               )}
               {!task.completed && DaysRemaining >= 0 && (
                 <>
                   <StatusTip days={DaysRemaining} type="pending" />
-                  <button
-                    onClick={() => {
-                      DeleteTaskHandle(task._id);
-                    }}
-                  >
-                    <MdDelete className="text-2xl text-[#E04747] float-right cursor-pointer " />
-                  </button>
                 </>
               )}
               {!task.completed && DaysRemaining < 0 && (
                 <>
                   <StatusTip days={DaysRemaining} type="overdue" />
-                  <button
-                    onClick={() => {
-                      DeleteTaskHandle(task._id);
-                    }}
-                  >
-                    <MdDelete className="text-2xl text-[#E04747] float-right cursor-pointer " />
-                  </button>
                 </>
               )}
-              <div className="flex items-center justify-center p-1 w-8 h-8 rounded-md hover:text-gray-700 bg-white/30 cursor-pointer transition-colors duration-200">
-                <MoreHorizontal
+              <div className="flex gap-2">
+                <button
                   onClick={() => {
-                    setTaskDialog(null);
-                    setTaskDialog(task);
+                    DeleteTaskHandle(mergedTask._id);
                   }}
-                />
+                >
+                  <MdDelete className="text-2xl text-[#E04747] float-right cursor-pointer " />
+                </button>
+                <div className="flex items-center justify-center p-1 w-8 h-8 rounded-md hover:text-gray-700 bg-white/30 cursor-pointer transition-colors duration-200">
+                  <MoreHorizontal
+                    onClick={() => {
+                      setTaskDialog(null);
+                      setTaskDialog(task);
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>

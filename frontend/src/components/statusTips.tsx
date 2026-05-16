@@ -1,27 +1,38 @@
-import { FaHashtag } from "react-icons/fa";
+import { Clock } from "lucide-react";
+import { CiWarning } from "react-icons/ci";
 import { FaCircleCheck } from "react-icons/fa6";
 
-const StatusTip = ({ type, days, completedAt }: { type: string; days?: number; completedAt?: string }) => {
+const StatusTip = ({ type, days }: { type: string; days?: number }) => {
   return (
     <div className="space-y-4">
-      {type === "success" && (
+      {type === "pending" && (
         <div
           role="alert"
-          className="bg-green-100 dark:bg-green-800 border-l-4 border-green-500 dark:border-green-700 text-green-900 dark:text-green-100 p-2 rounded-lg flex items-center transition duration-300 ease-in-out hover:bg-green-200 dark:hover:bg-green-800 transform hover:scale-102"
+          className="bg-green-100 dark:bg-green-800 border-l-4 border-green-500 dark:border-green-700 text-green-900 dark:text-green-100 p-2 rounded-lg flex items-center transition duration-300 ease-in-out hover:bg-green-200 dark:hover:bg-green-800 transform hover:scale-102 gap-2"
         >
-          <FaHashtag className="h-4 w-3 mr-0.5" />
-          <p className="text-xs font-semibold">{days} Days Remaining</p>
+          <Clock className="h-5 w-5" />
+          <p className="text-xs font-semibold">{days} Days left</p>
         </div>
       )}
 
       {type === "completed" && (
         <div
           role="alert"
-          className="bg-yellow-100 dark:bg-blue-500 border-l-4 border-blue-700 p-2 rounded-lg flex items-center transition duration-300 ease-in-out transform hover:scale-102"
+          className="bg-blue-500 border-l-4 border-blue-700 p-2 rounded-lg flex items-center"
         >
           <FaCircleCheck className="h-5 w-5 mr-1 " />
+          <p className="text-xs font-semibold">Task Completed</p>
+        </div>
+      )}
+
+      {type === "overdue" && (
+        <div
+          role="alert"
+          className=" bg-red-900 border-l-4 border-red-700 p-2 rounded-lg flex items-center transition duration-300 ease-in-out transform hover:scale-102"
+        >
+          <CiWarning className="h-5 w-5 mr-1 " />
           <p className="text-xs font-semibold">
-            Done at {completedAt}
+            Overdue for {Math.abs(days ?? 0)} Days
           </p>
         </div>
       )}

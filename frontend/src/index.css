@@ -5,7 +5,7 @@
   --animate-fade-in: fade-in 400ms ease-in-out;
   --animate-fade-out: fade-out 400ms ease-in-out;
   --animate-move-in: move-in 400ms ease-in-out;
-  --animate-move-out: move-out 400ms ease-in-out;
+  --animate-move-up: move-up 400ms ease-in-out;
   @keyframes fade-in {
     0% {
       opacity: 0;
@@ -34,6 +34,16 @@
     100% {
       opacity: 1;
       transform: translateX(0);
+    }
+  }
+  @keyframes move-up {
+    0% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }

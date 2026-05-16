@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import '../index.css'
+import { FaSortAmountUp, FaSortAmountDown } from "react-icons/fa";
+import { HiOutlineSwitchVertical } from "react-icons/hi";
+import "../index.css";
 
 const DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const MONTHS = [
@@ -17,12 +19,7 @@ const MONTHS = [
   "November",
   "December",
 ];
-
-export default function Calendar({
-  setDate,
-}: {
-  setDate: (date: Date) => Promise<void>;
-}) {
+function Calendar({ setDate }: { setDate: (date: Date) => Promise<void> }) {
   const today = new Date();
   const [viewDate, setViewDate] = useState(new Date(today)); // Feb 2024
   const [selected, setSelected] = useState(new Date(today));
@@ -110,6 +107,7 @@ export default function Calendar({
         {/* Day grid */}
         <div className="grid grid-cols-7 gap-1">
           {cells.map(({ date, inMonth }, i) => {
+            const isAvailable = date > today || isSameDay(date, today);
             const isSelected = isSameDay(date, selected);
             return (
               <button
@@ -124,8 +122,14 @@ export default function Calendar({
                     : inMonth
                       ? "text-slate-800 hover:bg-slate-300"
                       : "text-slate-300 hover:bg-slate-800/50"
-                }`}
+                }
+                ${
+                  !isAvailable &&
+                  "disabled:cursor-not-allowed disabled:bg-transparent disabled:text-gray-200 disabled:hover:bg-transparent"
+                }
+                      `}
                 type="button"
+                disabled={!isAvailable}
               >
                 {date.getDate()}
               </button>
@@ -136,3 +140,100 @@ export default function Calendar({
     </div>
   );
 }
+
+const ToolTip = ({ msg }: { msg: string }) => {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setVisible(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [msg]);
+
+  return (
+    visible && (
+      <div className="animation-move-up absolute text-md z-100 w-fit bottom-8 left-1/2 -translate-x-1/2 bg-red-500 outline-3 outline-offset-1 outline-red-400 text-white rounded-md px-4 py-2 opacity-100 pointer-events-none">
+        {msg}
+      </div>
+    )
+  );
+};
+
+type SortOrder = "asc" | "desc";
+
+const SortDropdown = ({
+  value,
+  onChange,
+}: {
+  value: SortOrder;
+  onChange: (order: SortOrder) => void;
+}) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
+  const options: { value: SortOrder; label: string; icon: React.ReactNode }[] =
+    [
+      { value: "asc", label: "Ascending", icon: <FaSortAmountUp /> },
+      { value: "desc", label: "Descending", icon: <FaSortAmountDown /> },
+    ];
+
+  return (
+    <div className="relative inline-block" ref={ref}>
+      <button
+        onClick={() => setOpen((prev) => !prev)}
+        className="flex items-center gap-2 px-3 py-2 bg-[#2B2D42] text-white rounded-lg hover:bg-[#3a3d5c] transition-colors text-sm"
+      >
+        <HiOutlineSwitchVertical className="text-base" />
+        {value === "asc" ? "Latest to Oldest" : "Oldest to Latest"}
+      </button>
+
+      <div
+        className={`absolute right-0 mt-2 w-40 bg-[#2B2D42] text-white rounded-lg shadow-lg overflow-hidden origin-top-right transition-all duration-150 ease-out ${
+          open
+            ? "opacity-100 scale-100 pointer-events-auto"
+            : "opacity-0 scale-95 pointer-events-none"
+        }`}
+      >
+        {options.map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => {
+              onChange(opt.value);
+              setOpen(false);
+              window.localStorage.setItem("sortOrder", opt.value);
+            }}
+            className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:bg-[#3a3d5c] transition-colors ${
+              value === opt.value ? "text-green-400" : ""
+            }`}
+          >
+            <span className="text-base">{opt.icon}</span>
+            {opt.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const LoadingSpinner = ({ loadingMessage }: { loadingMessage: string }) => {
+  return (
+    <div className="rounded-xl absolute top-0 z-100  bg-white/70 flex flex-col items-center gap-6 w-full h-full justify-center">
+      <div className="rounded-full w-15 h-15 animate-spin outline-[#2B2D42] -outline-offset-4 outline-2 border-r-2 border-t-2   " />
+      <p className="text-lg font-black animate-pulse">{loadingMessage}</p>
+    </div>
+  );
+};
+
+export { Calendar, ToolTip, SortDropdown, LoadingSpinner };

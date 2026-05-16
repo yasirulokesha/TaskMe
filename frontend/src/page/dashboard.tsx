@@ -3,7 +3,7 @@ import SideNavigation from "../components/sideNavigation";
 import Home from "./home";
 import logo from "../assets/logo-white.svg";
 import TaskView from "./taskView";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const Dashboard = () => {
 

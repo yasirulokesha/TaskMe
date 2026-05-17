@@ -126,15 +126,6 @@ Visit [http://localhost:5173](http://localhost:5173) — you're in! 🎉
 
 ---
 
-## 🐳 Running with Docker
-
-```bash
-docker build -t taskme .
-docker run -p 5000:5000 --env-file backend/.env taskme
-```
-
----
-
 ## 🌐 Deployment
 
 ### Frontend (Vercel)

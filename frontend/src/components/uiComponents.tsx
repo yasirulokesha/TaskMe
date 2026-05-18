@@ -3,6 +3,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { FaSortAmountUp, FaSortAmountDown } from "react-icons/fa";
 import { HiOutlineSwitchVertical } from "react-icons/hi";
 import "../index.css";
+import { CreateTaskForm } from "./taskOperation";
+import { IconButton } from "./buttonVarients";
+import { IoMdAdd } from "react-icons/io";
 
 const DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const MONTHS = [
@@ -185,8 +188,8 @@ const SortDropdown = ({
 
   const options: { value: SortOrder; label: string; icon: React.ReactNode }[] =
     [
-      { value: "asc", label: "Ascending", icon: <FaSortAmountUp /> },
-      { value: "desc", label: "Descending", icon: <FaSortAmountDown /> },
+      { value: "asc", label: "Earliest to Oldest", icon: <FaSortAmountUp /> },
+      { value: "desc", label: "Oldest to Earliest", icon: <FaSortAmountDown /> },
     ];
 
   return (
@@ -196,7 +199,7 @@ const SortDropdown = ({
         className="flex items-center gap-2 px-3 py-2 bg-[#2B2D42] text-white rounded-lg hover:bg-[#3a3d5c] transition-colors text-sm"
       >
         <HiOutlineSwitchVertical className="text-base" />
-        {value === "asc" ? "Latest to Oldest" : "Oldest to Latest"}
+        {value === "asc" ? "Earliest to Oldest" : "Oldest to Earliest"}
       </button>
 
       <div
@@ -205,6 +208,7 @@ const SortDropdown = ({
             ? "opacity-100 scale-100 pointer-events-auto"
             : "opacity-0 scale-95 pointer-events-none"
         }`}
+        
       >
         {options.map((opt) => (
           <button
@@ -214,7 +218,7 @@ const SortDropdown = ({
               setOpen(false);
               window.localStorage.setItem("sortOrder", opt.value);
             }}
-            className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:bg-[#3a3d5c] transition-colors ${
+            className={`w-full flex items-center gap-2 px-3 py-2 text-xs text-left hover:bg-[#3a3d5c] transition-colors ${
               value === opt.value ? "text-green-400" : ""
             }`}
           >
@@ -236,4 +240,19 @@ const LoadingSpinner = ({ loadingMessage }: { loadingMessage: string }) => {
   );
 };
 
-export { Calendar, ToolTip, SortDropdown, LoadingSpinner };
+const AddTask = () => {
+  const [createForm, setCreate] = useState(false);
+
+  return createForm ? (
+    <CreateTaskForm closeHandle={() => setCreate(false)} />
+  ) : (
+    <IconButton
+      text="Add Task"
+      onPress={() => setCreate(true)}
+      icon={<IoMdAdd size={20} />}
+      className="my-4"
+    />
+  );
+};
+
+export { Calendar, ToolTip, SortDropdown, LoadingSpinner, AddTask };

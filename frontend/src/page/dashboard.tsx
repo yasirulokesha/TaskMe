@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import SideNavigation from "../components/sideNavigation";
 import Home from "./home";
-import logo from "../assets/logo-white.svg";
 import TaskView from "./taskView";
 import { useEffect } from "react";
 
@@ -18,11 +17,7 @@ const Dashboard = () => {
         <SideNavigation />
       </aside>
 
-      <aside className="flex-1 overflow-y-auto p-8">
-        <img
-          src={logo}
-          className=" w-30 top-10 right-10 float-right absolute"
-        />
+      <aside className="flex-1 overflow-scroll">
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/tasks" element={<TaskView />} />

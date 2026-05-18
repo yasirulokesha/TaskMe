@@ -8,7 +8,7 @@ export default function TaskView() {
   // const { createTask } = useTasks();
 
   return (
-    <div className="w-full ">
+    <div className="w-full sm:p-10 p-5">
       {createForm && <CreateTaskForm closeHandle={() => setCreate(false)} />}
       <h1 className="text-3xl font-bold mb-10">Tasks</h1>
       <IconButton

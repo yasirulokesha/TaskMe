@@ -103,10 +103,27 @@ export default function useTasks() {
     }
   };
 
+  const DaysRemaining = (task: Task) =>
+    Math.ceil(
+      (new Date(task.dueDate).getTime() - new Date().getTime()) /
+        (1000 * 60 * 60 * 24),
+    );
+
+  const filterTasks = () => {
+    const pending = tasks.filter((task) => !task.completed);
+    const completed = tasks.filter((task) => task.completed);
+
+    const overdue = pending.filter((task) => DaysRemaining(task) < 0);
+
+    return { pending, completed, overdue };
+  };
+
   return {
     tasks,
     loading,
     error,
+    filterTasks,
+    DaysRemaining,
     fetchTasks,
     createTask,
     DeleteTask,

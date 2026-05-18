@@ -2,13 +2,20 @@ import { useState } from "react";
 import logo from "../src/assets/logo.svg";
 import { IconButton } from "./components/buttonVarients";
 import LoadingScreen from "./components/loadingScreen";
+import { useAuth } from "./hooks/useAuth";
+import { MoveRight } from "lucide-react";
 
 function Landing() {
+  const { user } = useAuth();
+
   const [loading, setLoading] = useState(false);
 
   const handleGoogleSignIn = () => {
     setLoading(true);
-    window.location.href = new URL('/auth/google', import.meta.env.VITE_API_URL).toString();
+    window.location.href = new URL(
+      "/auth/google",
+      import.meta.env.VITE_API_URL,
+    ).toString();
   };
 
   if (loading) {
@@ -57,24 +64,32 @@ function Landing() {
             Begin the journey here
           </h2>
 
-          <IconButton
-            text="Sign in with Google"
-            onPress={handleGoogleSignIn}
-            icon={
-              <svg
-                width="18"
-                height="20"
-                viewBox="0 0 22 22"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11.2235 9.0629V13.266H17.3334C16.5345 15.8125 14.3632 17.6352 11.2235 17.6352C7.48456 17.6352 4.4537 14.6641 4.4537 11C4.4537 7.3359 7.48456 4.3648 11.2235 4.3648C12.9044 4.3648 14.4395 4.9687 15.6233 5.9631L18.781 2.8677C16.787 1.0868 14.1343 0 11.2235 0C5.02486 0 0 4.9247 0 11C0 17.0753 5.02486 22 11.2235 22C20.6448 22 22.7241 13.365 21.8006 9.0772L11.2235 9.0629Z"
-                  fill="white"
-                />
-              </svg>
-            }
-          />
+          {!user ? (
+            <IconButton
+              text="Sign in with Google"
+              onPress={handleGoogleSignIn}
+              icon={
+                <svg
+                  width="18"
+                  height="20"
+                  viewBox="0 0 22 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.2235 9.0629V13.266H17.3334C16.5345 15.8125 14.3632 17.6352 11.2235 17.6352C7.48456 17.6352 4.4537 14.6641 4.4537 11C4.4537 7.3359 7.48456 4.3648 11.2235 4.3648C12.9044 4.3648 14.4395 4.9687 15.6233 5.9631L18.781 2.8677C16.787 1.0868 14.1343 0 11.2235 0C5.02486 0 0 4.9247 0 11C0 17.0753 5.02486 22 11.2235 22C20.6448 22 22.7241 13.365 21.8006 9.0772L11.2235 9.0629Z"
+                    fill="white"
+                  />
+                </svg>
+              }
+            />
+          ) : (
+            <IconButton
+              text="Go to the Dashboard"
+              onPress={() => window.location.replace("/Dashboard/Home")}
+              icon={<MoveRight />}
+            />
+          )}
         </div>
         <p className="text-center text-md text-[#2B2D42] max-w-md bottom-0 absolute mb-30">
           It is a simple and convenient task buddy

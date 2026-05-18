@@ -16,23 +16,37 @@ type Task = {
   completed: boolean;
 };
 
-function TaskViews({ listOnly = false }: { listOnly?: boolean }) {
-  const { tasks, loading, error, DeleteTask, UpdateTask } = useTasks();
+type NewTask = Omit<Task, "_id" | "completed">;
+
+const toDateString = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+function TaskViews({
+  listOnly = false,
+  overDueOnly = false,
+}: {
+  listOnly?: boolean;
+  overDueOnly?: boolean;
+}) {
+  const { tasks, loading, error, DeleteTask, UpdateTask, filterTasks } =
+    useTasks();
   const typedTasks = tasks as Task[];
-  const pendingTasks = typedTasks.filter((task) => !task.completed);
-  const completedTasks = typedTasks.filter((task) => task.completed);
+
+  const { pending, completed, overdue } = filterTasks();
+
   const [filter, setFilter] = useState<"pending" | "completed">("pending");
-
-  const filteredTasks = filter === "pending" ? pendingTasks : completedTasks;
-
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
+  const filteredTasks = !overDueOnly
+    ? filter === "pending"
+      ? pending
+      : completed
+    : overdue;
   const descSortedTasks = filteredTasks.toReversed();
-
   const taskList = sortOrder === "asc" ? filteredTasks : descSortedTasks;
 
   return (
-    <div className="w-full h-full m-auto flex flex-col gap-4">
+    <div className="w-full h-fit m-auto flex flex-col gap-4">
       <div className="flex items-center justify-between w-full pr-4">
         {!listOnly && (
           <div className="relative inline-flex items-center justify-center p-2 text-sm font-black text-[#2B2D42] bg-gray-200 w-fit rounded-xl duration-150 transition-all mt-6">
@@ -68,17 +82,22 @@ function TaskViews({ listOnly = false }: { listOnly?: boolean }) {
           </div>
         )}
 
-        <div className="relative inline-flex items-center justify-center p-2 text-sm font-black text-[#2B2D42]  w-fit rounded-xl duration-150 transition-all mt-6">
-          <h1 className="font-bold mr-2">Sort :</h1>
+        <div className="relative inline-flex items-center justify-center sm:p-2 text-sm font-black text-[#2B2D42]  w-fit rounded-xl duration-150 transition-all ">
+          <h1 className="font-bold mr-4">Sort :</h1>
           <SortDropdown value={sortOrder} onChange={setSortOrder} />
         </div>
       </div>
 
       {loading && (
         <div className="animate-pulse flex flex-col items-center gap-6 w-full">
-          <div className="h-10 bg-slate-400 w-full rounded-md"></div>
-          <div className="h-10 bg-slate-400 w-full rounded-md"></div>
-          <div className="h-10 bg-slate-400 w-full rounded-md"></div>
+          <div className="h-10 bg-slate-400 w-full rounded-xl"></div>
+          <div className="h-10 bg-slate-400 w-full rounded-xl"></div>
+          <div className="h-10 bg-slate-400 w-full rounded-xl"></div>
+          <div className="h-10 bg-slate-400 w-full rounded-xl"></div>
+          <div className="h-10 bg-slate-400 w-full rounded-xl"></div>
+          <div className="h-10 bg-slate-400 w-full rounded-xl"></div>
+          <div className="h-10 bg-slate-400 w-full rounded-xl"></div>
+          <div className="h-10 bg-slate-400 w-full rounded-xl"></div>
         </div>
       )}
       {!loading && !error && typedTasks.length > 0 && (
@@ -133,11 +152,6 @@ function TaskViews({ listOnly = false }: { listOnly?: boolean }) {
     </div>
   );
 }
-
-type NewTask = Omit<Task, "_id" | "completed">;
-
-const toDateString = (d: Date) =>
-  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
 function CreateTaskForm({ closeHandle }: { closeHandle: () => void }) {
   const [isLoading, setLoading] = useState(false);
@@ -286,7 +300,14 @@ const TaskModelView = ({
   DeleteTask: (id: string) => void;
   UpdateTask: (id: string, task: Task) => void;
 }) => {
+  const { DaysRemaining } = useTasks();
+
   const [isUpdating, setUpdating] = useState(false);
+  const [taskDialog, setTaskDialog] = useState<Task | null>(null);
+  const [updatedTask, setUpdatedTask] = useState<Task>(task);
+
+  const mergedTask = { ...task, ...updatedTask };
+  const daysRemaining = DaysRemaining(task);
 
   const DeleteTaskHandle = async (id: string) => {
     setUpdating(true);
@@ -303,19 +324,6 @@ const TaskModelView = ({
       UpdateTask(id, { ...task, completed: !task.completed });
     }, 400);
   };
-
-  const DaysRemaining = Math.ceil(
-    Math.ceil(
-      (new Date(task.dueDate).getTime() - new Date().getTime()) /
-        (1000 * 60 * 60 * 24),
-    ),
-  );
-
-  const [taskDialog, setTaskDialog] = useState<Task | null>(null);
-
-  const [updatedTask, setUpdatedTask] = useState<Task>(task);
-
-  const mergedTask = { ...task, ...updatedTask };
 
   return (
     <>
@@ -334,33 +342,37 @@ const TaskModelView = ({
       )}
 
       <div
-        className={`flex flex-row w-full duration-300 transition-all gap-0.5 ${
+        onClick={() => {
+          setTaskDialog(null);
+          setTaskDialog(task);
+        }}
+        className={`flex flex-row w-full duration-300 transition-all justify-center items-center sm:gap-0.5 gap-0 sm:bg-transparent rounded-xl bg-[#2B2D42] py-2 sm:p-0 ${
           isUpdating ? "opacity-0  scale-95" : "opacity-100 scale-100"
         }`}
       >
-        <div className="flex-1 hover:-outline-offset-4 outline-gray-400 hover:outline-2 text-white bg-[#2B2D42] duration-150 h-fit w-full rounded-xl">
+        <div className="flex-1 hover:-outline-offset-4 outline-gray-400 hover:outline-2 text-white sm:bg-[#2B2D42] duration-150 h-fit w-full rounded-xl">
           <div className="w-full py-3 px-7 flex sm:flex-row flex-col justify-between sm:items-center">
-            <div className="flex-col">
-              <h1 className="flex flex-col items-left text-lg font-bold">
-                {mergedTask.title}
-              </h1>
-            </div>
+            <h1 className="flex flex-col items-left text-lg font-bold w-fit overflow-hidden ">
+              {mergedTask.title}
+            </h1>
             <div className="flex top-0 gap-4 justify-between items-center">
-              {mergedTask.completed && (
-                <>
-                  <StatusTip type="completed" />
-                </>
-              )}
-              {!task.completed && DaysRemaining >= 0 && (
-                <>
-                  <StatusTip days={DaysRemaining} type="pending" />
-                </>
-              )}
-              {!task.completed && DaysRemaining < 0 && (
-                <>
-                  <StatusTip days={DaysRemaining} type="overdue" />
-                </>
-              )}
+              <div className="flex-2">
+                {mergedTask.completed && (
+                  <>
+                    <StatusTip type="completed" />
+                  </>
+                )}
+                {!task.completed && daysRemaining >= 0 && (
+                  <>
+                    <StatusTip days={daysRemaining} type="pending" />
+                  </>
+                )}
+                {!task.completed && daysRemaining < 0 && (
+                  <>
+                    <StatusTip days={daysRemaining} type="overdue" />
+                  </>
+                )}
+              </div>
               <div className="flex gap-2">
                 <button
                   onClick={() => {
@@ -369,21 +381,32 @@ const TaskModelView = ({
                 >
                   <MdDelete className="text-2xl text-[#E04747] float-right cursor-pointer " />
                 </button>
-                <div className="flex items-center justify-center p-1 w-8 h-8 rounded-md hover:text-gray-700 bg-white/30 cursor-pointer transition-colors duration-200">
-                  <MoreHorizontal
-                    onClick={() => {
-                      setTaskDialog(null);
-                      setTaskDialog(task);
-                    }}
-                  />
+                <div
+                  onClick={() => {
+                    setTaskDialog(null);
+                    setTaskDialog(task);
+                  }}
+                  className="sm:flex hidden items-center justify-center p-1 w-8 h-8 rounded-md hover:text-gray-700 bg-white/30 cursor-pointer transition-colors duration-200"
+                >
+                  <MoreHorizontal />
                 </div>
+                {!task.completed && (
+                  <div
+                    className="flex-0 sm:hidden shrink-0 justify-center items-center  hover:-outline-offset-4 outline-gray-400 hover:outline-2 text-white bg-[#2B2D42] duration-150 h-full w-full rounded-xl p-1"
+                    onClick={() => CompleteTaskHandle(task._id)}
+                  >
+                    <SiGoogletasks
+                      className={`text-2xl cursor-pointer text-white group-hover:text-green-500 duration-300 ease-in-out transition-all group-hover:scale-105 `}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
         {!task.completed && (
           <div
-            className="group flex-0 shrink-0 justify-center items-center  hover:-outline-offset-4 outline-gray-400 hover:outline-2 text-white bg-[#2B2D42] duration-150 h-full w-full rounded-xl p-4"
+            className="sm:flex flex-0 hidden shrink-0 justify-center items-center  hover:-outline-offset-4 outline-gray-400 hover:outline-2 text-white bg-[#2B2D42] duration-150 h-full w-full rounded-xl p-4"
             onClick={() => CompleteTaskHandle(task._id)}
           >
             <SiGoogletasks
@@ -408,13 +431,14 @@ const TaskDialogView = ({
   CompletionHandle: () => void;
 }) => {
   const UpdateTask = useTasks().UpdateTask;
+  const { DaysRemaining } = useTasks();
 
+  const [taskEdit, setTaskEdit] = useState(false);
+  const [updatedTask, setUpdatedTask] = useState<Task>(task);
+  const isUpdated = JSON.stringify(task) !== JSON.stringify(updatedTask);
   const [isLoading, setLoading] = useState(false);
 
-  const DaysRemaining = Math.ceil(
-    (new Date(task.dueDate).getTime() - new Date().getTime()) /
-      (1000 * 60 * 60 * 24),
-  );
+  const daysRemaining = DaysRemaining(task);
 
   const TaskUpdateHandle = async (updatedTask: Task) => {
     setLoading(true);
@@ -422,12 +446,6 @@ const TaskDialogView = ({
     await UpdateTask(task._id, updatedTask);
     setLoading(false);
   };
-
-  const [taskEdit, setTaskEdit] = useState(false);
-
-  const [updatedTask, setUpdatedTask] = useState<Task>(task);
-
-  const isUpdated = JSON.stringify(task) !== JSON.stringify(updatedTask);
 
   return (
     <div className="absolute bg-black/20 w-full h-screen z-100 top-0 left-0 ">
@@ -441,11 +459,11 @@ const TaskDialogView = ({
                 type={
                   task.completed
                     ? "completed"
-                    : DaysRemaining >= 0
+                    : daysRemaining >= 0
                       ? "pending"
                       : "overdue"
                 }
-                days={DaysRemaining}
+                days={daysRemaining}
               />
             </div>
             <div
@@ -511,7 +529,7 @@ const TaskDialogView = ({
             onChange={(e) =>
               setUpdatedTask({ ...updatedTask, notes: e.target.value })
             }
-          ></textarea>
+          />
 
           <div className="flex justify-end gap-2 mt-6">
             <OutlinedButton

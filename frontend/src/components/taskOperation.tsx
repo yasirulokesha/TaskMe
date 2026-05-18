@@ -342,15 +342,17 @@ const TaskModelView = ({
       )}
 
       <div
-        onClick={() => {
-          setTaskDialog(null);
-          setTaskDialog(task);
-        }}
         className={`flex flex-row w-full duration-300 transition-all justify-center items-center sm:gap-0.5 gap-0 sm:bg-transparent rounded-xl bg-[#2B2D42] py-2 sm:p-0 ${
           isUpdating ? "opacity-0  scale-95" : "opacity-100 scale-100"
         }`}
       >
-        <div className="flex-1 hover:-outline-offset-4 outline-gray-400 hover:outline-2 text-white sm:bg-[#2B2D42] duration-150 h-fit w-full rounded-xl">
+        <div
+          onClick={() => {
+            setTaskDialog(null);
+            setTaskDialog(task);
+          }}
+          className="flex-1 hover:-outline-offset-4 outline-gray-400 hover:outline-2 text-white sm:bg-[#2B2D42] duration-150 h-fit w-full rounded-xl"
+        >
           <div className="w-full py-3 px-7 flex sm:flex-row flex-col justify-between sm:items-center">
             <h1 className="flex flex-col items-left text-lg font-bold w-fit overflow-hidden ">
               {mergedTask.title}
